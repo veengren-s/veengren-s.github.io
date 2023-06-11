@@ -1,0 +1,11 @@
+.test{
+    color: aqua;
+}
+.img{
+    width:auto;
+    height:300px 
+}
+.img:hover{
+    scale: 1.5;
+    cursor: pointer;
+}
