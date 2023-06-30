@@ -1,11 +1,37 @@
-.test{
-    color: aqua;
-}
-.img{
-    width:auto;
-    height:300px 
-}
-.img:hover{
-    scale: 1.5;
+.row {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  /* Create four equal columns that sits next to each other */
+  .column {
+    flex: 25%;
+    max-width: 25%;
+  }
+  
+  .column img {
+    vertical-align: middle;
+    width: 100%;
+  }
+
+  .column img:hover{
+    filter: brightness(60%);
     cursor: pointer;
-}
+
+  }
+  
+  /* Responsive layout - makes a two column-layout instead of four columns */
+  @media screen and (max-width: 800px) {
+    .column {
+      flex: 50%;
+      max-width: 50%;
+    }
+  }
+  
+  /* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
+  @media screens and (max-width: 600px) {
+    .column {
+      flex: 100%;
+      max-width: 100%;
+    }
+  }
