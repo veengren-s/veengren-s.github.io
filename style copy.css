@@ -1,33 +1,20 @@
 .test{
     color: aqua;
 }
-.img{
-    width: auto;;
-    height: 500px 
-}
+
 .arrow{
     border: none;
     height: 100px;
     width: 50px;
+    position: sticky;
+
 }
 .arrow:hover{
     cursor: pointer;
 }
 
-.th{
-    height: 100px;
-    width: auto;
-}
-.th:hover{
-    cursor: pointer;
-    color: black;
-}
-
-.arrowLower{
-    border: none;
-    height: 100px;
-    width: 50px;
-}
-.arrowLower:hover{
-    cursor: pointer;
+.table{
+    table-layout: fixed;
+    width:;
+    height:;
 }

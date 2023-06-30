@@ -29,8 +29,6 @@ var photo_paths = [
     "https://i.postimg.cc/cCwNpcCv/DSC01262-HDR.jpg"
 ]
 
-var thum_id=[0,1,2,3,4]
-
 var big = document.getElementById("big")
 var big_id
 
@@ -38,14 +36,22 @@ var big_id
 //left arrow button
 var left = document.getElementById("lbutton")
 left.onclick = function leftC(){
-
+    big_id -= 1
+    if( big_id < 0){
+        big_id = photo_paths.length-1
+    }
+    big.src = photo_paths[big_id]
 
 }
 
 // righ arrow button
 var right = document.getElementById("rbutton")
 right.onclick = function rightC(){
-
+    big_id += 1
+    if( big_id >=photo_paths.length){
+        big_id = 0
+    }
+    big.src = photo_paths[big_id]
 
 }
 
@@ -56,7 +62,9 @@ x.onclick = function close(){
 }
 
 function load(){
+    //load main image
     big_id = window.location.hash
-    big_id = big_id.replace("#","")
+    big_id = Number(big_id.replace("#",""))
     big.src =photo_paths[big_id]
+    big.style.height = "75%"
 }
