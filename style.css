@@ -6,6 +6,7 @@
 .large_thumb{
     width: 100%;
     height: auto;
+    margin: 0px;
 }
 
 .large_thumb:hover{
@@ -29,4 +30,8 @@
     display:inline-block;    
     margin-right: auto;    
     margin-left: auto;  
+ }
+
+ body{
+    margin: 0px;
  }
