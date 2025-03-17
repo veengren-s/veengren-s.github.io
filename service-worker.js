@@ -1,5 +1,5 @@
 const CACHE_NAME = "Cold Weather Corrections";
-const urlsToCache = ["/", "/index.html", "/styles.css", "/script.js"];
+const urlsToCache = ["/", "/indedx.html","/glidepath.html","/todCalcs.html", "/styles.css", "/script.js"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
