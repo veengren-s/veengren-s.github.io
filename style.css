@@ -1,37 +1,4 @@
-.header {
-    background-color: black;
-    text-align: center;
-}
-
-.large_thumb{
-    width: 100%;
-    height: auto;
-    margin: 0px;
-}
-
-.large_thumb:hover{
-    opacity: .8;
-}
-
-#images-wrapper {    
-    line-height: 0;       
-     -webkit-column-count: 3;    
-     -webkit-column-gap: 0px;    
-     -moz-column-count: 3;
-     -moz-column-gap: 0px;
-      column-count: 3;    
-      column-gap: 0px;    
- }  
- #images-wrapper img {    
-    width: 100% !important;    
-    height: auto !important;  
- }  
- #images-wrapper{    
-    display:inline-block;    
-    margin-right: auto;    
-    margin-left: auto;  
- }
-
- body{
-    margin: 0px;
- }
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+  }

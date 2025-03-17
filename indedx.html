@@ -5,24 +5,53 @@
         <script src="script.js"></script>
         
         <h1> Cold Weather Corrections:</h1>
-        <form onsubmit="correction(event)">
+        <form>
+            
             <div id = "ad_alt">
-                <p> Aerodrome Elevation: <input placeholder="Elevation in feet" type="text"></p>
-                <p id = "ad_alt_error" style="color: red; visibility:hidden">Error!!!! Please check the entry and try again!</p>
+                <label for="">Aerodrome Elevation: </label>
+                <input placeholder="Elevation in feet" type="text">
+                <!-- the lazy solution to my problems -->
+                <span></span>
+                <span></span>
+                <span id = "ad_alt_error" style="color: red; visibility:hidden">
+                    Error!!!! Please check the entry and try again!
+                </span>
             </div>
             
             <div id = "ad_temp">
-                <p> Aerodrome Temp: <input type = "text" placeholder="Temp. in Celsius"></p>
-                <p id = "ad_temp_error" style="color: red; visibility:hidden">Error!!!! Please check the entry and try again!</p>
+                <label>Aerodrome Temp:</label>
+                <input type = "text" placeholder="Temp. in Celsius">
+                <!-- the lazy solution to my problems -->
+                <span></span>
+                <span></span>
+                <span id = "ad_temp_error" style="color: red; visibility:hidden">
+                    Error!!!! Please check the entry and try again!
+                </span>
             </div>
            
             <div id="alt">
-                <p> Altitude to be Corrected: <input id="Alt" type="text" placeholder="Altitude Above Sea Level"></p>
-                <p id = "alt_error" style="color: red; visibility:hidden">Error!!!! Please check the entry and try again!</p>
-                <p id = "corrected"></p>
+                <div>
+                    <label for="Alt"> Alttitude to be corrected: </label>
+                    <input id="Alt" type="text" placeholder="Altitude Above Sea Level">
+                    <label>MDA:</label>
+                    <input type="checkbox">     
+                    <span style="color: red; display:none">
+                            Error!!!! Please check the entry and try again!
+                    </span>
+                    <span id = "corrected"></span>
+                </div>
             </div>
-            <input type="Submit" value="submit">
+
+            <button type="button" onclick="add()">+</button>
+            <button id = "remove" type="button" disabled onclick="remove()">-</button>
+            <button type="button" onclick="correction()">submit</button>
         </form>
+
+        <h3> Also See:</h3>
+        <a href="indedx.html">Cold Wx Corrections</a>
+        <a href="glidepath.html">GlidePath Corrections</a>
+        <a href="todCalcs.html">TOD Calculatinos</a>
+
     </body>
     <script> if ("serviceWorker" in navigator) {
         navigator.serviceWorker.register("/service-worker.js")
