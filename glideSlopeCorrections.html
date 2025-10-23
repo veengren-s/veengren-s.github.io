@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlidePath Altitude Corrections</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="aviationStyle.css">
+</head>
+<body class="bg-gray-900 text-gray-100 font-sans">
+
+<nav class="fixed top-0 w-full bg-gray-800 bg-opacity-90 backdrop-blur-md shadow-md z-50">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+        <a href="./aviationIndex.html" class="text-2xl font-extrabold text-cyan-400 tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-400 hover:scale-105 transition-transform duration-300">
+            ✈︎ Aviation Tools
+        </a>
+    </div>
+</nav>
+
+    <!-- Main Calculator Card -->
+    <div class="flex justify-center items-start min-h-screen pt-32 px-4">
+        <div class="bg-gray-800 rounded-2xl shadow-2xl p-6 sm:p-8 w-full max-w-4xl border border-cyan-400">
+            <h1 class="text-2xl sm:text-3xl font-bold text-cyan-400 mb-6 text-center">GlidePath Altitude Corrections</h1>
+
+            <!-- Inputs Section -->
+            <div class="space-y-4 mb-6">
+                <div>
+                    <label class="block text-gray-300 mb-1">Glide Path Angle (°)</label>
+                    <input type="number" id="gpa" class="w-full p-3 rounded-md bg-gray-700 border border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition" placeholder="Enter Glide Path Angle">
+                </div>
+                <div>
+                    <label class="block text-gray-300 mb-1">Threshold Elevation (ft)</label>
+                    <input type="number" id="thresholdElevation" class="w-full p-3 rounded-md bg-gray-700 border border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition" placeholder="Enter Threshold Elevation">
+                </div>
+                <div>
+                    <label class="block text-gray-300 mb-1">Aerodrome Temperature (°C)</label>
+                    <input type="number" id="aerodromeTemp" class="w-full p-3 rounded-md bg-gray-700 border border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition" placeholder="Enter Aerodrome Temperature">
+                </div>
+                <div>
+                    <label class="block text-gray-300 mb-1">Start Distance (NM)</label>
+                    <input type="number" id="startDistance" class="w-full p-3 rounded-md bg-gray-700 border border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition" placeholder="Enter Start Distance">
+                </div>
+                <div>
+                    <label class="block text-gray-300 mb-1">End Distance (NM)</label>
+                    <input type="number" id="endDistance" class="w-full p-3 rounded-md bg-gray-700 border border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition" placeholder="Enter End Distance">
+                </div>
+            </div>
+
+            <!-- Control Buttons -->
+            <div class="flex flex-col sm:flex-row justify-between mt-4 space-y-2 sm:space-y-0">
+                <button id="calculate" class="w-full sm:w-auto bg-cyan-400 text-gray-900 font-bold px-4 py-3 rounded-md hover:bg-cyan-500 transition">Calculate</button>
+                <button id="reset" class="w-full sm:w-auto bg-gray-700 border border-cyan-400 text-cyan-400 px-4 py-3 rounded-md hover:bg-gray-700/50 transition">Reset</button>
+            </div>
+
+            <!-- Results -->
+            <div id="resultContainer" class="mt-6 bg-gray-700 p-4 rounded-md border border-cyan-300">
+                <p id="result" class="text-gray-100">Enter values and press Calculate.</p>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="glidepathScript.js"></script>
+</body>
+</html>
