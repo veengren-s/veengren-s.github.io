@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aviation Flight Times</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: #111827; color: #f3f4f6; font-family: sans-serif; }
+  </style>
+</head>
+<body class="pt-16 px-4">
+
+  <nav class="fixed top-0 w-full bg-gray-800 bg-opacity-90 backdrop-blur-md shadow-md z-50">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+      <a href="#" class="text-2xl font-extrabold text-cyan-400 tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-400 hover:scale-105 transition-transform duration-300">
+        ✈︎ Aviation Tools
+      </a>
+    </div>
+  </nav>
+
+  <div class="flex justify-center items-start min-h-screen pt-32">
+    <div class="bg-gray-800 rounded-2xl shadow-2xl p-6 sm:p-8 w-full max-w-5xl border border-cyan-400">
+
+      <h1 class="text-2xl sm:text-3xl font-bold text-cyan-400 mb-6 text-center">Flight Times Table</h1>
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-center border border-cyan-400">
+          <thead>
+            <tr class="text-gray-300">
+              <th class="border border-cyan-400 p-2">OUT</th>
+              <th class="border border-cyan-400 p-2">OFF</th>
+              <th class="border border-cyan-400 p-2">ON</th>
+              <th class="border border-cyan-400 p-2">IN</th>
+              <th class="border border-cyan-400 p-2">AIR TIME</th>
+              <th class="border border-cyan-400 p-2">FLIGHT TIME</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="flex flex-wrap justify-between mt-4 gap-2">
+        <button id="addRow" class="bg-cyan-400 text-gray-900 font-bold px-4 py-3 rounded-md hover:bg-cyan-500 transition">Add Row</button>
+        <button id="removeRow" class="bg-red-600 text-gray-100 font-bold px-4 py-3 rounded-md hover:bg-red-700 transition">Remove Row</button>
+        <button id="clearRows" class="bg-gray-700 border border-cyan-400 text-cyan-400 px-4 py-3 rounded-md hover:bg-gray-700/50 transition">Clear Rows</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="aviationTimes.js"></script>
+</body>
+</html>

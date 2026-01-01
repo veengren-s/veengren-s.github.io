@@ -173,8 +173,7 @@ function remove(){
     }
 }
 
-// not pretty but works (Kind of)
-function glidePath(){
+// not pretty but works (Kind of)function glidePath(){
     var div = document.getElementById("gp")
     // if is already table remove
     if(div.children.length > 14){

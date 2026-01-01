@@ -35,3 +35,61 @@
  body{
     margin: 0px;
  }
+
+ .gallery-container {
+  max-width: 800px;
+  margin: 40px auto;
+  text-align: center;
+  position: relative;
+}
+
+.main-image {
+  position: relative;
+}
+
+.main-image img {
+  width: 100%;
+  height: 450px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.prev, .next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2rem;
+  color: white;
+  background: rgba(0,0,0,0.5);
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 50%;
+  user-select: none;
+}
+
+.prev { left: 10px; }
+.next { right: 10px; }
+
+.thumbnails {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.thumbnails img {
+  width: 100px;
+  height: 60px;
+  object-fit: cover;
+  cursor: pointer;
+  border-radius: 4px;
+  opacity: 0.6;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.thumbnails img.active,
+.thumbnails img:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
