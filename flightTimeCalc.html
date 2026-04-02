@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aviation Tools | Flight Time Calculator</title>
+  <style>
+    :root {
+      --bg-top: #08111c;
+      --bg-bottom: #111c29;
+      --surface: rgba(11, 20, 31, 0.82);
+      --surface-strong: rgba(14, 24, 37, 0.92);
+      --surface-muted: rgba(255, 255, 255, 0.05);
+      --border: rgba(151, 178, 204, 0.16);
+      --text: #edf3fb;
+      --muted: #97abc0;
+      --accent: #59b7ff;
+      --accent-soft: rgba(89, 183, 255, 0.13);
+      --danger: #ff8484;
+      --shadow: 0 24px 60px rgba(1, 6, 12, 0.45);
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+      --max-width: 1180px;
+      --font-stack: "Avenir Next", "SF Pro Display", "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font-stack);
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(89, 183, 255, 0.18), transparent 28%),
+        radial-gradient(circle at 80% 15%, rgba(104, 220, 196, 0.1), transparent 22%),
+        linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      z-index: -1;
+      border-radius: 999px;
+      filter: blur(10px);
+      opacity: 0.5;
+    }
+
+    body::before {
+      width: 280px;
+      height: 280px;
+      top: 60px;
+      left: -90px;
+      background: rgba(89, 183, 255, 0.15);
+    }
+
+    body::after {
+      width: 360px;
+      height: 360px;
+      right: -120px;
+      bottom: -120px;
+      background: rgba(51, 115, 173, 0.16);
+    }
+
+    .shell {
+      width: min(var(--max-width), calc(100% - 32px));
+      margin: 32px auto;
+      padding: 28px;
+      border: 1px solid rgba(151, 178, 204, 0.14);
+      border-radius: var(--radius-lg);
+      background: var(--surface);
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 14px 0 10px;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .hero p {
+      max-width: 60ch;
+      margin: 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    button {
+      border: 0;
+      border-radius: 999px;
+      cursor: pointer;
+      font: inherit;
+      transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .add-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 18px;
+      color: #fff;
+      background: linear-gradient(135deg, #4aa9f2, #2278bc);
+      box-shadow: 0 14px 28px rgba(18, 97, 163, 0.34);
+      font-weight: 700;
+    }
+
+    .panel {
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius-lg) - 4px);
+      background: var(--surface-strong);
+    }
+
+    .grid-head,
+    .data-row {
+      display: grid;
+      grid-template-columns: 88px repeat(4, minmax(90px, 1fr)) repeat(2, minmax(110px, 1fr)) 58px;
+      gap: 12px;
+      align-items: center;
+      padding: 16px 18px;
+    }
+
+    .grid-head {
+      background: var(--surface-muted);
+      border-bottom: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .rows {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .data-row + .data-row {
+      border-top: 1px solid var(--border);
+    }
+
+    .row-label {
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .time-input {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: rgba(7, 15, 24, 0.82);
+      color: var(--text);
+      font: inherit;
+      font-size: 1rem;
+      text-align: center;
+      transition: border-color 140ms ease, box-shadow 140ms ease;
+    }
+
+    .time-input:focus {
+      outline: none;
+      border-color: rgba(89, 183, 255, 0.6);
+      box-shadow: 0 0 0 4px rgba(89, 183, 255, 0.14);
+    }
+
+    .duration {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 50px;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.04));
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .remove-button {
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(255, 132, 132, 0.18);
+      background: rgba(255, 132, 132, 0.08);
+      color: var(--danger);
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .remove-button:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+      transform: none;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 22px;
+    }
+
+    .summary-card {
+      padding: 20px 22px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+    }
+
+    .summary-label {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .summary-value {
+      margin: 0;
+      font-size: clamp(1.9rem, 4vw, 2.6rem);
+      line-height: 1;
+      letter-spacing: -0.03em;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .note {
+      margin-top: 20px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    .toast-stack {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .toast {
+      min-width: 260px;
+      max-width: 340px;
+      padding: 14px 16px;
+      border: 1px solid rgba(194, 74, 74, 0.2);
+      border-radius: 14px;
+      background: rgba(255, 248, 248, 0.96);
+      color: #7d2f2f;
+      box-shadow: 0 16px 34px rgba(0, 0, 0, 0.28);
+      animation: slideIn 180ms ease;
+    }
+
+    .toast strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.95rem;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 980px) {
+      .hero {
+        flex-direction: column;
+      }
+
+      .toolbar {
+        justify-content: flex-start;
+      }
+
+      .grid-head {
+        display: none;
+      }
+
+      .data-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+        padding: 18px;
+      }
+
+      .row-label,
+      .field-group,
+      .result-group,
+      .remove-wrap {
+        grid-column: span 2;
+      }
+
+      .field-group,
+      .result-group {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .field-cell,
+      .result-cell {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .mobile-label {
+        color: var(--muted);
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+
+      .remove-wrap {
+        display: flex;
+        justify-content: flex-end;
+      }
+    }
+
+    @media (min-width: 981px) {
+      .field-group,
+      .result-group,
+      .mobile-label {
+        display: contents;
+      }
+
+      .remove-wrap {
+        display: contents;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .shell {
+        width: min(100% - 18px, var(--max-width));
+        margin: 10px auto;
+        padding: 18px;
+      }
+
+      .summary {
+        grid-template-columns: 1fr;
+      }
+
+      .field-group,
+      .result-group {
+        grid-template-columns: 1fr;
+      }
+
+      .toast-stack {
+        left: 12px;
+        right: 12px;
+        top: 12px;
+      }
+
+      .toast {
+        min-width: 0;
+        max-width: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="toast-stack" id="toastStack" aria-live="polite" aria-atomic="true"></div>
+
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <span class="eyebrow">Aviation Utility Suite</span>
+        <h1>Flight Time Calculator</h1>
+      </div>
+
+      <div class="toolbar">
+        <button class="add-button" id="addRowButton" type="button" aria-label="Add flight row">
+          <span aria-hidden="true">+</span>
+          Add Row
+        </button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="grid-head" aria-hidden="true">
+        <div>Leg</div>
+        <div>Out</div>
+        <div>Off</div>
+        <div>On</div>
+        <div>In</div>
+        <div>Air Time</div>
+        <div>Flight Time</div>
+        <div>Remove</div>
+      </div>
+
+      <div class="rows" id="rows"></div>
+    </section>
+
+    <section class="summary">
+      <article class="summary-card">
+        <p class="summary-label">Total Air Time</p>
+        <p class="summary-value" id="totalAir">0.0</p>
+      </article>
+
+      <article class="summary-card">
+        <p class="summary-label">Total Flight Time</p>
+        <p class="summary-value" id="totalFlight">0.0</p>
+      </article>
+    </section>
+
+  </main>
+
+  <template id="rowTemplate">
+    <div class="data-row">
+      <div class="row-label"></div>
+
+      <div class="field-group">
+        <label class="field-cell">
+          <span class="mobile-label">Out</span>
+          <span class="sr-only">Out time</span>
+          <input class="time-input" data-field="out" inputmode="numeric" placeholder="HH:MM" maxlength="5">
+        </label>
+
+        <label class="field-cell">
+          <span class="mobile-label">Off</span>
+          <span class="sr-only">Off time</span>
+          <input class="time-input" data-field="off" inputmode="numeric" placeholder="HH:MM" maxlength="5">
+        </label>
+
+        <label class="field-cell">
+          <span class="mobile-label">On</span>
+          <span class="sr-only">On time</span>
+          <input class="time-input" data-field="on" inputmode="numeric" placeholder="HH:MM" maxlength="5">
+        </label>
+
+        <label class="field-cell">
+          <span class="mobile-label">In</span>
+          <span class="sr-only">In time</span>
+          <input class="time-input" data-field="in" inputmode="numeric" placeholder="HH:MM" maxlength="5">
+        </label>
+      </div>
+
+      <div class="result-group">
+        <div class="result-cell">
+          <span class="mobile-label">Air Time</span>
+          <div class="duration" data-output="air">--.-</div>
+        </div>
+
+        <div class="result-cell">
+          <span class="mobile-label">Flight Time</span>
+          <div class="duration" data-output="flight">--.-</div>
+        </div>
+      </div>
+
+      <div class="remove-wrap">
+        <button class="remove-button" type="button" aria-label="Remove row">&times;</button>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    const rowsContainer = document.getElementById("rows");
+    const rowTemplate = document.getElementById("rowTemplate");
+    const addRowButton = document.getElementById("addRowButton");
+    const totalAirElement = document.getElementById("totalAir");
+    const totalFlightElement = document.getElementById("totalFlight");
+    const toastStack = document.getElementById("toastStack");
+
+    const FIELD_ORDER = ["out", "off", "on", "in"];
+    let rowCount = 0;
+    let toastTimer;
+
+    function createRow() {
+      rowCount += 1;
+      const fragment = rowTemplate.content.cloneNode(true);
+      const row = fragment.querySelector(".data-row");
+      row.dataset.rowId = String(Date.now() + rowCount);
+      row.querySelector(".row-label").textContent = `Leg ${rowCount}`;
+      rowsContainer.appendChild(fragment);
+      updateRowLabels();
+      updateRemoveButtonState();
+      recalculateAll();
+    }
+
+    function updateRowLabels() {
+      const rows = getRows();
+      rows.forEach((row, index) => {
+        const label = row.querySelector(".row-label");
+        label.textContent = `Leg ${index + 1}`;
+      });
+    }
+
+    function updateRemoveButtonState() {
+      const rows = getRows();
+      rows.forEach((row) => {
+        const button = row.querySelector(".remove-button");
+        button.disabled = rows.length === 1;
+      });
+    }
+
+    function getRows() {
+      return Array.from(rowsContainer.querySelectorAll(".data-row"));
+    }
+
+    function sanitizeCharacters(value) {
+      let sanitized = "";
+      let colonSeen = false;
+
+      for (const char of value) {
+        if (/\d/.test(char)) {
+          sanitized += char;
+          continue;
+        }
+
+        if (char === ":" && !colonSeen) {
+          sanitized += char;
+          colonSeen = true;
+        }
+      }
+
+      return sanitized;
+    }
+
+    function parseTimeInput(rawValue) {
+      const value = rawValue.trim();
+
+      if (!value) {
+        return { minutes: null, normalized: "" };
+      }
+
+      if (!/^[\d:]+$/.test(value)) {
+        return { error: "invalid-characters" };
+      }
+
+      const colonCount = (value.match(/:/g) || []).length;
+
+      if (colonCount > 1) {
+        return { error: "invalid-format" };
+      }
+
+      let hours = 0;
+      let minutes = 0;
+
+      if (value.includes(":")) {
+        const [hourPart, minutePart] = value.split(":");
+
+        if (!hourPart || !minutePart || !/^\d+$/.test(hourPart) || !/^\d+$/.test(minutePart)) {
+          return { error: "invalid-format" };
+        }
+
+        hours = Number(hourPart);
+        minutes = Number(minutePart);
+      } else {
+        const digits = value.replace(/\D/g, "");
+
+        if (!digits) {
+          return { minutes: null, normalized: "" };
+        }
+
+        const minuteDigits = digits.slice(-2);
+        const hourDigits = digits.slice(0, -2);
+        hours = Number(hourDigits || "0");
+        minutes = Number(minuteDigits);
+      }
+
+      if (Number.isNaN(hours) || Number.isNaN(minutes)) {
+        return { error: "invalid-format" };
+      }
+
+      const totalMinutes = ((hours * 60) + minutes) % 1440;
+      return {
+        minutes: totalMinutes,
+        normalized: formatClockTime(totalMinutes)
+      };
+    }
+
+    function formatClockTime(totalMinutes) {
+      const safeMinutes = ((totalMinutes % 1440) + 1440) % 1440;
+      const hours = Math.floor(safeMinutes / 60);
+      const minutes = safeMinutes % 60;
+      return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+    }
+
+    function formatDecimalHours(totalMinutes) {
+      const decimalHours = Math.round(totalMinutes / 6) / 10;
+      return decimalHours.toFixed(1);
+    }
+
+    function normalizeRowTimeline(baseTimes) {
+      const adjusted = {};
+      let lastAbsolute = null;
+
+      FIELD_ORDER.forEach((field) => {
+        const current = baseTimes[field];
+        if (current == null) {
+          adjusted[field] = null;
+          return;
+        }
+
+        let absolute = current;
+
+        if (lastAbsolute != null) {
+          while (absolute < lastAbsolute) {
+            absolute += 1440;
+          }
+        }
+
+        adjusted[field] = absolute;
+        lastAbsolute = absolute;
+      });
+
+      return adjusted;
+    }
+
+    function recalculateAll() {
+      let totalAir = 0;
+      let totalFlight = 0;
+
+      getRows().forEach((row) => {
+        const baseTimes = {};
+
+        FIELD_ORDER.forEach((field) => {
+          const input = row.querySelector(`[data-field="${field}"]`);
+          const result = parseTimeInput(input.value);
+          baseTimes[field] = result.minutes;
+        });
+
+        const adjusted = normalizeRowTimeline(baseTimes);
+        const air = adjusted.off != null && adjusted.on != null ? adjusted.on - adjusted.off : null;
+        const flight = adjusted.out != null && adjusted.in != null ? adjusted.in - adjusted.out : null;
+
+        row.querySelector('[data-output="air"]').textContent = air != null ? formatDecimalHours(air) : "--.-";
+        row.querySelector('[data-output="flight"]').textContent = flight != null ? formatDecimalHours(flight) : "--.-";
+
+        if (air != null) {
+          totalAir += air;
+        }
+
+        if (flight != null) {
+          totalFlight += flight;
+        }
+      });
+
+      totalAirElement.textContent = formatDecimalHours(totalAir);
+      totalFlightElement.textContent = formatDecimalHours(totalFlight);
+    }
+
+    function showToast(title, message) {
+      toastStack.innerHTML = "";
+      const toast = document.createElement("div");
+      toast.className = "toast";
+      toast.innerHTML = `<strong>${title}</strong><span>${message}</span>`;
+      toastStack.appendChild(toast);
+      window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => {
+        toast.remove();
+      }, 2600);
+    }
+
+    function handleInput(event) {
+      const input = event.target;
+      if (!input.matches(".time-input")) {
+        return;
+      }
+
+      const sanitized = sanitizeCharacters(input.value);
+
+      if (sanitized !== input.value) {
+        input.value = sanitized;
+        showToast("Invalid characters removed", "Use numbers with an optional colon, like 930 or 14:05.");
+      }
+
+      recalculateAll();
+    }
+
+    function handleBlur(event) {
+      const input = event.target;
+      if (!input.matches(".time-input")) {
+        return;
+      }
+
+      const value = input.value.trim();
+      if (!value) {
+        recalculateAll();
+        return;
+      }
+
+      const parsed = parseTimeInput(value);
+
+      if (parsed.error) {
+        showToast("Time not recognized", "Please enter digits with an optional colon, for example 0930 or 9:30.");
+        return;
+      }
+
+      input.value = parsed.normalized;
+      recalculateAll();
+    }
+
+    function handleClick(event) {
+      if (event.target.closest("#addRowButton")) {
+        createRow();
+        return;
+      }
+
+      const removeButton = event.target.closest(".remove-button");
+      if (!removeButton) {
+        return;
+      }
+
+      if (getRows().length === 1) {
+        showToast("At least one row is required", "Keep one row available so you can continue entering flight times.");
+        return;
+      }
+
+      removeButton.closest(".data-row").remove();
+      updateRowLabels();
+      updateRemoveButtonState();
+      recalculateAll();
+    }
+
+    addRowButton.addEventListener("click", createRow);
+    rowsContainer.addEventListener("input", handleInput);
+    rowsContainer.addEventListener("blur", handleBlur, true);
+    rowsContainer.addEventListener("click", handleClick);
+
+    createRow();
+  </script>
+</body>
+</html>
